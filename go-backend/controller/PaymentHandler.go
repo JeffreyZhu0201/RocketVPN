@@ -29,5 +29,6 @@ func MakePayment(c *gin.Context) {
 	paymentPrams["currency"] = c.Query("currency")
 	paymentPrams["payment_method_types"] = c.Query("payment_method_types")
 	paymentPrams["description"] = c.Query("description")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Payment successful"})
 }
