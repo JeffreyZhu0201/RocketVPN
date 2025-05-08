@@ -27,7 +27,7 @@ import (
 )
 
 type User struct {
-	ID       string `json:"id" gorm:"type:char(36);primaryKey"`
+	ID       string `json:"ID" gorm:"type:char(36);primaryKey"`
 	Email    string `json:"email" gorm:"unique"`
 	Password string `json:"password"`
 	Balance  *uint  `json:"balance"`

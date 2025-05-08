@@ -1,3 +1,13 @@
+/*
+ * @Author: Jeffrey Zhu 1624410543@qq.com
+ * @Date: 2025-05-08 15:11:58
+ * @LastEditors: Jeffrey Zhu 1624410543@qq.com
+ * @LastEditTime: 2025-05-08 18:22:47
+ * @FilePath: \RocketVPN\go-backend\controller\SubscribeHandler.go
+ * @Description: File Description Here...
+ *
+ * Copyright (c) 2025 by JeffreyZhu, All Rights Reserved.
+ */
 package controller
 
 import (
@@ -19,7 +29,7 @@ func CreateSubscribe(c *gin.Context) {
 
 	// 查询是否已存在订阅
 	var existingSubscribe models.Subscribe
-	if err := utils.DB.Where("email = ?", subscribe.Name).First(&existingSubscribe).Error; err == nil {
+	if err := utils.DB.Where("name = ?", subscribe.Name).First(&existingSubscribe).Error; err == nil {
 		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "订阅已存在"})
 		return
 	}

@@ -34,7 +34,8 @@ func InitDB() *gorm.DB {
 	}
 
 	// 自动迁移数据库表
-	err = DB.AutoMigrate(&models.User{}, &models.OvpnFile{})
+	err = DB.AutoMigrate(&models.User{}, &models.OvpnFile{},
+		&models.Subscribe{}, &models.Order{})
 
 	if err != nil {
 		log.Fatalf("数据库迁移失败: %v", err)

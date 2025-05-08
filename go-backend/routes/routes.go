@@ -31,6 +31,23 @@ func SetupRoutes(r *gin.Engine) {
 		})
 	})
 
+	order := r.Group("/order")
+	{
+		order.POST("/create", middleware.JWTAuthMiddleware, controller.CreateOrder)
+	}
+
+	ovpnFiles := r.Group("/ovpn")
+	{
+		ovpnFiles.GET("/getall", controller.GetOvpnFileList)
+		ovpnFiles.GET("/getbyid", controller.BalanceAuthMiddleware, controller.GetOvpnFile)
+		ovpnFiles.POST("/insert", controller.InsertOvpnFile)
+	}
+
+	subscribe := r.Group("/subscribe")
+	{
+		subscribe.POST("/create", controller.CreateSubscribe)
+	}
+
 	// tags := r.Group("/tag")
 	// {
 	// 	tags.GET("/", controller.GetTags)
