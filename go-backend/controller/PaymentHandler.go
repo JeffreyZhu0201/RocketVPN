@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-07 14:50:48
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-08 15:07:45
+ * @LastEditTime: 2025-05-08 21:57:21
  * @FilePath: \RocketVPN\go-backend\controller\PaymentHandler.go
  * @Description: File Description Here...
  *
@@ -13,7 +13,9 @@ package controller
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"go-backend/utils"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -25,16 +27,17 @@ func MakePayment(paymentParams map[string]interface{}) string {
 	// 例如，创建一个支付意图并返回给前端
 
 	paymentParams["pid"] = os.Getenv("PAY_PID")
-	paymentParams["notify_url"] = os.Getenv("NOTIFY_URL")
-	paymentParams["sign_type"] = os.Getenv("SIGN_TYPE")
+	paymentParams["notify_url"] = os.Getenv("PAY_NOTIFY_URL")
+	paymentParams["return_url"] = os.Getenv("PAY_RETURN_URL")
+	paymentParams["sign_type"] = os.Getenv("PAY_SIGN_TYPE")
 
 	// 创建一个新的map来存储需要签名的参数
 	signParams := make(map[string]string)
 
 	// 复制需要签名的参数（排除sign、sign_type和空值）
 	for k, v := range paymentParams {
-		if k != "sign" && k != "sign_type" && v != "" {
-			signParams[k] = v.(string)
+		if k != "sign" && k != "sign_type" && v != nil {
+			signParams[k] = fmt.Sprint(v)
 		}
 	}
 
@@ -55,6 +58,7 @@ func MakePayment(paymentParams map[string]interface{}) string {
 		signStr.WriteString("=")
 		signStr.WriteString(signParams[k])
 	}
+	log.Println(signStr.String())
 
 	// 添加商户密钥并计算MD5
 	finalStr := signStr.String() + os.Getenv("PRIVATE_KEY")
@@ -66,11 +70,12 @@ func MakePayment(paymentParams map[string]interface{}) string {
 	// for k, v := range paymentParams {
 	// 	anyParams[k] = v
 	// }
-	res, err := utils.FetchPost(os.Getenv("PAY_URL"), paymentParams)
+	log.Println(paymentParams)
+	res, err := utils.FetchPostForm(os.Getenv("PAY_URL"), paymentParams)
 	if err != nil {
 		// 处理错误
 		//c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to make payment"})
-		return ""
+		return res
 	}
 	// c.JSON(http.StatusOK, models.Response{Code: 200, Message: "Payment successful", Data: map[string]interface{}{"payment_url": res}})
 	return res

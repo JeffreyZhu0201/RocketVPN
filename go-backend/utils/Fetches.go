@@ -15,7 +15,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"net/url"
 )
 
 // 传入目标url和参数map，返回post请求的结果
@@ -40,7 +42,29 @@ func FetchPost(targetUrl string, params map[string]any) (string, error) {
 	}
 
 	return string(body), nil
+}
 
+// 传入目标url和参数map，返回post请求的结果(使用form表单)
+func FetchPostForm(targetUrl string, params map[string]any) (string, error) {
+	formData := url.Values{}
+	for key, value := range params {
+		formData.Add(key, fmt.Sprintf("%v", value))
+	}
+	log.Println("")
+
+	resp, err := http.PostForm(targetUrl, formData)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	// Read response
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), nil
 }
 
 // 传入目标url和参数map，返回get请求的结果

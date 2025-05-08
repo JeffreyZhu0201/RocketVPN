@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-08 18:15:51
+ * @LastEditTime: 2025-05-08 18:35:22
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -72,7 +72,7 @@ func CreateOrder(c *gin.Context) {
 
 	paymentParams["name"] = subscribe.Name
 	paymentParams["count"] = countUint
-	paymentParams["money"] = subscribe.Money
+	paymentParams["money"] = *subscribe.Money
 	paymentUrl := MakePayment(paymentParams)
 
 	if paymentUrl == "" {
