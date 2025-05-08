@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-04-24 19:31:14
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-04-24 19:31:23
+ * @LastEditTime: 2025-05-07 23:45:53
  * @FilePath: \RocketVPN\go-backend\controller\AuthHandler.go
  * @Description: File Description Here...
  *
@@ -46,6 +46,7 @@ func RegisterHandler(c *gin.Context) {
 	}
 	// 注册用户
 	user.Password = string(hashedPassword)
+	// 创建用户
 	if err := utils.DB.Create(&user).Error; err != nil {
 		//注册失败
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: Var.USER_REGISTER_FAIL})

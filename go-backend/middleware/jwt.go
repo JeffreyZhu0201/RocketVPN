@@ -22,14 +22,14 @@ import (
 )
 
 type Claims struct {
-	claims_data interface{}
+	ClaimsData interface{}
 	jwt.StandardClaims
 }
 
 func GenerateJWT(claims_data interface{}) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
-		claims_data: claims_data,
+		ClaimsData: claims_data,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
