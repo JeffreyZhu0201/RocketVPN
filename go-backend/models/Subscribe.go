@@ -9,6 +9,7 @@ type Subscribe struct {
 	ID      string `json:"id" gorm:"type:char(36);primaryKey"`
 	Name    string `json:"name"`
 	Balance *uint  `json:"balance"`
+	Money   *uint  `json:"money"`
 }
 
 // BeforeCreate 在创建记录之前生成 UUID

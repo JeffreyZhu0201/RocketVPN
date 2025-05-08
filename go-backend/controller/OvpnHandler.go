@@ -1,10 +1,14 @@
 package controller
 
 import (
+	"go-backend/Var"
+	"go-backend/middleware"
 	"go-backend/models"
 	"go-backend/utils"
+	"log"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -55,4 +59,25 @@ func GetOvpnFile(c *gin.Context) {
 
 	// 返回 ovpn 文件的内容
 	c.JSON(http.StatusOK, models.Response{Code: 200, Message: "Ovpn file retrieved successfully", Data: ovpnFile})
+}
+
+func BalanceAuthMiddleware(c *gin.Context) {
+
+	claims := &middleware.Claims{}
+	token, err := jwt.ParseWithClaims(c.GetHeader("Authorization"), claims, func(token *jwt.Token) (interface{}, error) {
+		return utils.JwtKey, nil
+	})
+
+	// return token, claims, err
+
+	// token, _, err := middleware.ValidToken(c.GetHeader("Authorization"))
+
+	if err != nil || !token.Valid {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Code: 401, Message: Var.TOKEN_INVALID})
+		return
+	}
+
+	log.Println(claims.ClaimsData.(*models.User))
+
+	c.Next()
 }

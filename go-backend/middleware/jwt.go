@@ -44,7 +44,6 @@ func ValidToken(tokenString string) (*jwt.Token, *Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return utils.JwtKey, nil
 	})
-
 	return token, claims, err
 }
 
@@ -58,4 +57,12 @@ func JWTAuthMiddleware(c *gin.Context) {
 	}
 
 	c.Next()
+}
+
+func GetJwtClaims(c *gin.Context) (*Claims, error) {
+	token, claims, err := ValidToken(c.GetHeader("Authorization"))
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+	return claims, nil
 }

@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-04-24 19:31:14
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-07 23:45:53
+ * @LastEditTime: 2025-05-08 14:33:39
  * @FilePath: \RocketVPN\go-backend\controller\AuthHandler.go
  * @Description: File Description Here...
  *
@@ -84,7 +84,8 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// 生成JWT令牌
-	token, err := middleware.GenerateJWT(existingUser)
+	token, err := middleware.GenerateJWT(map[string]interface{}{"Email": existingUser.Email})
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: Var.SYSTEM_ERROR})
 		return
