@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-09 19:27:51
+ * @LastEditTime: 2025-05-09 23:55:47
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -80,4 +80,33 @@ func CreateOrder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.Response{Code: 200, Message: "Order created successfully", Data: map[string]interface{}{"payment_url": paymentUrl}})
+}
+
+func Notify(c *gin.Context) {
+
+	out_trade_no := c.Query("out_trade_no")
+	var subscribe models.Subscribe
+	var order models.Order
+	var user models.User
+
+	if out_trade_no == "" {
+		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid out_trade_no"})
+		return
+	}
+
+	if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).First(&order).Update("paid_status", "paid").Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update order status"})
+		return
+	}
+
+	if err := utils.DB.Model(&models.Subscribe{}).Where("id = ?", order.SubscribeId).First(&subscribe).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to find order"})
+		return
+	}
+
+	if err := utils.DB.Model(&models.User{}).Where("email = ?", order.PaidUser).First(&user).Update("balance", *user.Balance+*subscribe.Balance).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update user subscribe_id"})
+		return
+	}
+	c.String(http.StatusOK, "success")
 }

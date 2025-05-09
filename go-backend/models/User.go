@@ -37,5 +37,6 @@ type User struct {
 // BeforeCreate 在创建记录之前生成 UUID
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = uuid.New().String()
+	u.Balance = new(uint)
 	return
 }

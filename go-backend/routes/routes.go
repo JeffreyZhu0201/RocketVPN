@@ -47,6 +47,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		subscribe.POST("/create", controller.CreateSubscribe)
 	}
+	r.GET("/notify", controller.Notify)
 
 	// tags := r.Group("/tag")
 	// {

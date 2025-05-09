@@ -8,7 +8,7 @@ import (
 type Subscribe struct {
 	ID      string   `json:"id" gorm:"type:char(36);primaryKey"`
 	Name    string   `json:"name"`
-	Balance *float32 `json:"balance"`
+	Balance *uint    `json:"balance"`
 	Money   *float32 `json:"money"`
 }
 
