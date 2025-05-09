@@ -6,13 +6,13 @@ import (
 )
 
 type Order struct {
-	ID          string `json:"id" gorm:"type:char(36);primaryKey"`
-	OutTradeNo  string `json:"out_trade_no"`
-	PaidUser    string `json:"paid_user"`
-	SubscribeId string `json:"subscribe_id"`
-	PaidStatus  string `json:"paid_status"`
-	Amount      *uint  `json:"amount"`
-	Count       *uint  `json:"count"`
+	ID          string   `json:"id" gorm:"type:char(36);primaryKey"`
+	OutTradeNo  string   `json:"out_trade_no"`
+	PaidUser    string   `json:"paid_user"`
+	SubscribeId string   `json:"subscribe_id"`
+	PaidStatus  string   `json:"paid_status"`
+	Amount      *float32 `json:"amount"`
+	Count       *uint    `json:"count"`
 	gorm.Model
 }
 

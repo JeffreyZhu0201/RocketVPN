@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-07 14:50:48
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-08 21:57:21
+ * @LastEditTime: 2025-05-09 19:46:24
  * @FilePath: \RocketVPN\go-backend\controller\PaymentHandler.go
  * @Description: File Description Here...
  *
@@ -18,6 +18,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -25,8 +26,8 @@ func MakePayment(paymentParams map[string]interface{}) string {
 	// 处理支付请求的逻辑
 	// 这里可以使用 Stripe 或其他支付网关的 SDK 来处理支付请求
 	// 例如，创建一个支付意图并返回给前端
-
-	paymentParams["pid"] = os.Getenv("PAY_PID")
+	pid, _ := strconv.Atoi(os.Getenv("PAY_PID"))
+	paymentParams["pid"] = pid
 	paymentParams["notify_url"] = os.Getenv("PAY_NOTIFY_URL")
 	paymentParams["return_url"] = os.Getenv("PAY_RETURN_URL")
 	paymentParams["sign_type"] = os.Getenv("PAY_SIGN_TYPE")
@@ -54,24 +55,23 @@ func MakePayment(paymentParams map[string]interface{}) string {
 		if i > 0 {
 			signStr.WriteString("&")
 		}
-		signStr.WriteString(k)
+		signStr.WriteString(string(k))
 		signStr.WriteString("=")
-		signStr.WriteString(signParams[k])
+		signStr.WriteString(string(signParams[k]))
 	}
-	log.Println(signStr.String())
 
 	// 添加商户密钥并计算MD5
 	finalStr := signStr.String() + os.Getenv("PRIVATE_KEY")
 	h := md5.New()
 	h.Write([]byte(finalStr))
-	paymentParams["sign"] = hex.EncodeToString(h.Sum(nil))
-
+	//paymentParams["sign"] = hex.EncodeToString(h.Sum(nil))
+	signStr.WriteString("&sign_type=MD5&sign=" + hex.EncodeToString(h.Sum(nil)))
 	// anyParams := make(map[string]any)
 	// for k, v := range paymentParams {
 	// 	anyParams[k] = v
 	// }
-	log.Println(paymentParams)
-	res, err := utils.FetchPostForm(os.Getenv("PAY_URL"), paymentParams)
+	res, err := utils.Post(os.Getenv("PAY_URL") + "?" + signStr.String())
+	log.Println(res)
 	if err != nil {
 		// 处理错误
 		//c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to make payment"})
