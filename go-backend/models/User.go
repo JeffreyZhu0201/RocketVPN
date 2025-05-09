@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-04-24 19:32:02
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-07 23:42:30
+ * @LastEditTime: 2025-05-10 00:12:54
  * @FilePath: \RocketVPN\go-backend\models\User.go
  * @Description: File Description Here...
  *
@@ -27,7 +27,7 @@ import (
 )
 
 type User struct {
-	ID       string `json:"ID" gorm:"type:char(36);primaryKey"`
+	ID       string `json:"ID" gorm:"primaryKey"`
 	Email    string `json:"email" gorm:"unique"`
 	Password string `json:"password"`
 	Balance  *uint  `json:"balance"`

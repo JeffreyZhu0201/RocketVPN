@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-09 23:55:47
+ * @LastEditTime: 2025-05-10 00:11:36
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -38,8 +38,8 @@ func CreateOrder(c *gin.Context) {
 	log.Println(jwtUserEmail)
 
 	//生成订单号
-	OutTradeNo := uuid.New().String()
-
+	OutTradeNo := uuid.New()
+	log.Println(OutTradeNo)
 	// 查询Subscribe表，获取金额
 	var subscribe models.Subscribe
 	if err := utils.DB.Where("id = ?", c.Query("subscribe_id")).First(&subscribe).Error; err != nil {
@@ -52,26 +52,28 @@ func CreateOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid count parameter"})
 		return
 	}
-
 	countUint := uint(count)
+
 	if err := utils.DB.Model(&models.Order{}).Create(&models.Order{
 		PaidUser:    jwtUserEmail.(string),
-		OutTradeNo:  OutTradeNo,
+		OutTradeNo:  OutTradeNo.String(),
 		Amount:      subscribe.Money,
 		Count:       &countUint,
 		PaidStatus:  "unpaid",
-		SubscribeId: subscribe.Name,
+		SubscribeId: subscribe.ID,
 	}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to create order"})
 		return
 	}
+	log.Println(OutTradeNo)
 
 	paymentParams := make(map[string]interface{})
 
-	paymentParams["out_trade_no"] = OutTradeNo
+	paymentParams["out_trade_no"] = OutTradeNo.String()
 	paymentParams["name"] = subscribe.Name
 	// paymentParams["count"] = countUint
 	paymentParams["money"] = *subscribe.Money
+
 	paymentUrl := MakePayment(paymentParams)
 
 	if paymentUrl == "" {
