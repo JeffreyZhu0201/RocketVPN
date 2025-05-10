@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-10 15:41:17
+ * @LastEditTime: 2025-05-10 16:12:17
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -85,21 +85,46 @@ func CreateOrder(c *gin.Context) {
 }
 
 func Notify(c *gin.Context) {
+	// 处理支付通知的逻辑
+
+	queryParams := make(map[string]interface{})
 	out_trade_no := c.Query("out_trade_no")
 	var subscribe models.Subscribe
 	var order models.Order
 	var user models.User
+
+	queryParams["out_trade_no"] = c.Query("out_trade_no")
+	queryParams["pid"] = c.Query("pid")
+	queryParams["trade_no"] = c.Query("trade_no")
+	queryParams["trade_status"] = c.Query("trade_status")
+	queryParams["money"] = c.Query("money")
+	queryParams["sign"] = c.Query("sign")
+	queryParams["sign_type"] = c.Query("sign_type")
+	queryParams["type"] = c.Query("type")
+	queryParams["name"] = c.Query("name")
+
+	log.Println(queryParams)
+	// 验证签名
+	if c.Query("trade_status") != "TRADE_SUCCESS" {
+		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid trade_status"})
+		return
+	}
+
+	_, sign := utils.SortMapAndSign(queryParams)
+	if sign != c.Query("sign") {
+		log.Println("invalid sign", sign)
+		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid sign"})
+		return
+	}
 
 	if out_trade_no == "" {
 		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid out_trade_no"})
 		return
 	}
 
-	if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).First(&order).Error; err != nil && order.PaidStatus == "unpaid" {
-		if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).Update("paid_status", "paid").Error; err != nil {
-			c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update order status"})
-			return
-		}
+	if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).First(&order).Update("paid_status", "paid").Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update order"})
+		return
 	}
 
 	if err := utils.DB.Model(&models.Subscribe{}).Where("id = ?", order.SubscribeId).First(&subscribe).Error; err != nil {
