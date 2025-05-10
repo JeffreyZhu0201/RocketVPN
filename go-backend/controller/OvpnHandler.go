@@ -1,3 +1,13 @@
+/*
+ * @Author: Jeffrey Zhu 1624410543@qq.com
+ * @Date: 2025-05-07 23:31:03
+ * @LastEditors: Jeffrey Zhu 1624410543@qq.com
+ * @LastEditTime: 2025-05-10 14:35:27
+ * @FilePath: \RocketVPN\go-backend\controller\OvpnHandler.go
+ * @Description: File Description Here...
+ *
+ * Copyright (c) 2025 by JeffreyZhu, All Rights Reserved.
+ */
 package controller
 
 import (
@@ -48,7 +58,8 @@ func GetOvpnFileList(c *gin.Context) {
 }
 
 func GetOvpnFile(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Query("id")
+	log.Println("id", id)
 	var ovpnFile models.OvpnFile
 	// 处理获取单个 ovpn 文件的逻辑
 	// 这里可以使用 GORM 或其他 ORM 来查询数据库中的 ovpn 文件
@@ -64,6 +75,7 @@ func GetOvpnFile(c *gin.Context) {
 func BalanceAuthMiddleware(c *gin.Context) {
 
 	claims := &middleware.Claims{}
+	var user models.User
 	token, err := jwt.ParseWithClaims(c.GetHeader("Authorization"), claims, func(token *jwt.Token) (interface{}, error) {
 		return utils.JwtKey, nil
 	})
@@ -77,7 +89,16 @@ func BalanceAuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	log.Println(claims.ClaimsData.(*models.User))
+	claimsData := claims.ClaimsData.(map[string]interface{})
+	if utils.DB.Model(&models.User{}).Where("Email = ?", claimsData["Email"]).First(&user).Error != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Code: 401, Message: Var.TOKEN_INVALID})
+		return
+	}
+	if *user.Balance < 1 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Code: 401, Message: "余额不足!"})
+		return
+	}
+	log.Println(claims.ClaimsData)
 
 	c.Next()
 }

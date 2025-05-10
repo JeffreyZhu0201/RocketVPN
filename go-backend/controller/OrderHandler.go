@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-10 00:11:36
+ * @LastEditTime: 2025-05-10 14:23:51
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -85,7 +85,6 @@ func CreateOrder(c *gin.Context) {
 }
 
 func Notify(c *gin.Context) {
-
 	out_trade_no := c.Query("out_trade_no")
 	var subscribe models.Subscribe
 	var order models.Order
