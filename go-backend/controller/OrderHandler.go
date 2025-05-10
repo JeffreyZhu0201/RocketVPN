@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-10 16:12:17
+ * @LastEditTime: 2025-05-10 21:43:09
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -16,6 +16,7 @@ import (
 	"go-backend/utils"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,13 @@ func CreateOrder(c *gin.Context) {
 	// 处理创建订单的逻辑
 	// 这里可以使用 Stripe 或其他支付网关的 SDK 来处理订单创建请求
 	// 例如，创建一个订单并返回给前端
+
+	pid, _ := strconv.Atoi(os.Getenv("PAY_PID"))
+	paymentParams := make(map[string]interface{})
+	paymentParams["pid"] = pid
+	paymentParams["notify_url"] = os.Getenv("PAY_NOTIFY_URL")
+	paymentParams["return_url"] = os.Getenv("PAY_RETURN_URL")
+	paymentParams["sign_type"] = os.Getenv("PAY_SIGN_TYPE")
 
 	// 解析请求参数
 	Claims, err := middleware.GetJwtClaims(c)
@@ -67,14 +75,22 @@ func CreateOrder(c *gin.Context) {
 	}
 	log.Println(OutTradeNo)
 
-	paymentParams := make(map[string]interface{})
-
 	paymentParams["out_trade_no"] = OutTradeNo.String()
 	paymentParams["name"] = subscribe.Name
 	// paymentParams["count"] = countUint
 	paymentParams["money"] = *subscribe.Money
 
-	paymentUrl := MakePayment(paymentParams)
+	// 处理支付请求的逻辑
+	// 这里可以使用 Stripe 或其他支付网关的 SDK 来处理支付请求
+	// 例如，创建一个支付意图并返回给前端
+
+	signStr, _ := utils.SortMapAndSign(paymentParams)
+	paymentUrl, err := utils.Post(os.Getenv("PAY_URL") + "?" + signStr.String())
+
+	if err != nil {
+		// 处理错误
+		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to make payment"})
+	}
 
 	if paymentUrl == "" {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to create order"})
@@ -88,10 +104,6 @@ func Notify(c *gin.Context) {
 	// 处理支付通知的逻辑
 
 	queryParams := make(map[string]interface{})
-	out_trade_no := c.Query("out_trade_no")
-	var subscribe models.Subscribe
-	var order models.Order
-	var user models.User
 
 	queryParams["out_trade_no"] = c.Query("out_trade_no")
 	queryParams["pid"] = c.Query("pid")
@@ -103,6 +115,11 @@ func Notify(c *gin.Context) {
 	queryParams["type"] = c.Query("type")
 	queryParams["name"] = c.Query("name")
 
+	out_trade_no := c.Query("out_trade_no")
+	var subscribe models.Subscribe
+	var order models.Order
+	var user models.User
+
 	log.Println(queryParams)
 	// 验证签名
 	if c.Query("trade_status") != "TRADE_SUCCESS" {
@@ -111,14 +128,10 @@ func Notify(c *gin.Context) {
 	}
 
 	_, sign := utils.SortMapAndSign(queryParams)
+
 	if sign != c.Query("sign") {
 		log.Println("invalid sign", sign)
 		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid sign"})
-		return
-	}
-
-	if out_trade_no == "" {
-		c.JSON(http.StatusBadRequest, models.Response{Code: 400, Message: "Invalid out_trade_no"})
 		return
 	}
 
