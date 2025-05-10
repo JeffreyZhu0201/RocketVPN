@@ -47,18 +47,18 @@ func RegisterHandler(c *gin.Context) {
 	// 注册用户
 	user.Password = string(hashedPassword)
 	// 创建用户
-	if err := utils.DB.Create(&user).Error; err != nil {
+	if err := utils.DB.Model(&models.User{}).Create(&user).First(&user).Error; err != nil {
 		//注册失败
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: Var.USER_REGISTER_FAIL})
 		return
 	}
 	// 登录，生成JWT令牌
-	token, err := middleware.GenerateJWT(user)
+	token, err := middleware.GenerateJWT(map[string]interface{}{"id": user.ID})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: Var.SYSTEM_ERROR})
 		return
 	}
-	c.JSON(http.StatusOK, models.Response{Code: 200, Message: Var.USER_REGISTER_SUCCESS, Data: map[string]interface{}{"user": user, "token": token}})
+	c.JSON(http.StatusOK, models.Response{Code: 200, Message: Var.USER_REGISTER_SUCCESS, Data: map[string]interface{}{"token": token}})
 }
 
 func LoginHandler(c *gin.Context) {
@@ -84,12 +84,12 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// 生成JWT令牌
-	token, err := middleware.GenerateJWT(map[string]interface{}{"Email": existingUser.Email})
+	token, err := middleware.GenerateJWT(map[string]interface{}{"id": existingUser.ID})
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: Var.SYSTEM_ERROR})
 		return
 	}
 
-	c.JSON(http.StatusOK, models.Response{Code: 200, Message: Var.USER_LOGIN_SUCCESS, Data: map[string]interface{}{"token": token, "user": existingUser}})
+	c.JSON(http.StatusOK, models.Response{Code: 200, Message: Var.USER_LOGIN_SUCCESS, Data: map[string]interface{}{"token": token}})
 }

@@ -2,8 +2,8 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-03-14 23:11:18
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-04-01 13:37:51
- * @FilePath: \go-backend\middleware\jwt.go
+ * @LastEditTime: 2025-05-10 15:27:24
+ * @FilePath: \RocketVPN\go-backend\middleware\jwt.go
  * @Description: File Description Here...
  *
  * Copyright (c) 2025 by JeffreyZhu, All Rights Reserved.
@@ -55,7 +55,6 @@ func JWTAuthMiddleware(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Code: 401, Message: Var.TOKEN_INVALID})
 		return
 	}
-
 	c.Next()
 }
 

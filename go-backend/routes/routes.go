@@ -47,37 +47,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		subscribe.POST("/create", controller.CreateSubscribe)
 	}
+
 	r.GET("/notify", controller.Notify)
-
-	// tags := r.Group("/tag")
-	// {
-	// 	tags.GET("/", controller.GetTags)
-	// 	tags.GET("/:id", controller.GetTagById)
-	// 	tags.POST("/createtag", controller.CreateTag)
-	// 	tags.DELETE("/deletetag", controller.DeleteTag)
-	// 	tags.POST("/update", controller.UpdateTag)
-	// }
-
-	// post := r.Group("/post")
-	// {
-	// 	// user permission
-	// 	post.GET("/:id", controller.GetPostById)                  //+
-	// 	post.GET("/search", controller.GetPostsBySearch)          //+
-	// 	post.GET("/", controller.GetRangedPostsNotDeleted)        //+
-	// 	post.POST("/create", controller.CreatePost)               //+
-	// 	post.POST("/delete", controller.DeletePost)               //+
-	// 	post.POST("/update", controller.UpdatePost)               //+
-	// 	post.GET("/getbyautherid", controller.GetPostsByAutherId) //+
-	// 	post.GET("/getbytagid", controller.GetPostsByTagId)       //+
-
-	// 	// admin permission
-	// 	post.GET("/getall", controller.GetRangedPosts) //+
-
-	// }
-
-	// comment := r.Group("/comment")
-	// {
-	// 	comment.GET("/", GetCommentsHandler)
-	// }
 
 }
