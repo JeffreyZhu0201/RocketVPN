@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-07 14:50:48
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-09 19:46:24
+ * @LastEditTime: 2025-05-10 15:57:39
  * @FilePath: \RocketVPN\go-backend\controller\PaymentHandler.go
  * @Description: File Description Here...
  *
@@ -11,15 +11,10 @@
 package controller
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"fmt"
 	"go-backend/utils"
 	"log"
 	"os"
-	"sort"
 	"strconv"
-	"strings"
 )
 
 func MakePayment(paymentParams map[string]interface{}) string {
@@ -32,44 +27,12 @@ func MakePayment(paymentParams map[string]interface{}) string {
 	paymentParams["return_url"] = os.Getenv("PAY_RETURN_URL")
 	paymentParams["sign_type"] = os.Getenv("PAY_SIGN_TYPE")
 
-	// 创建一个新的map来存储需要签名的参数
-	signParams := make(map[string]string)
-
-	// 复制需要签名的参数（排除sign、sign_type和空值）
-	for k, v := range paymentParams {
-		if k != "sign" && k != "sign_type" && v != nil {
-			signParams[k] = fmt.Sprint(v)
-		}
-	}
-
-	// 按ASCII码排序参数名
-	var keys []string
-	for k := range signParams {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// 拼接参数
-	var signStr strings.Builder
-	for i, k := range keys {
-		if i > 0 {
-			signStr.WriteString("&")
-		}
-		signStr.WriteString(string(k))
-		signStr.WriteString("=")
-		signStr.WriteString(string(signParams[k]))
-	}
-
-	// 添加商户密钥并计算MD5
-	finalStr := signStr.String() + os.Getenv("PRIVATE_KEY")
-	h := md5.New()
-	h.Write([]byte(finalStr))
-	//paymentParams["sign"] = hex.EncodeToString(h.Sum(nil))
-	signStr.WriteString("&sign_type=MD5&sign=" + hex.EncodeToString(h.Sum(nil)))
+	//signStr.WriteString("&sign_type=MD5&sign=" + hex.EncodeToString(h.Sum(nil)))
 	// anyParams := make(map[string]any)
 	// for k, v := range paymentParams {
 	// 	anyParams[k] = v
 	// }
+	signStr, _ := utils.SortMapAndSign(paymentParams)
 	res, err := utils.Post(os.Getenv("PAY_URL") + "?" + signStr.String())
 	log.Println(res)
 	if err != nil {

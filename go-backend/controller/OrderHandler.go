@@ -2,7 +2,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-08 14:14:22
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-10 14:23:51
+ * @LastEditTime: 2025-05-10 15:41:17
  * @FilePath: \RocketVPN\go-backend\controller\OrderHandler.go
  * @Description: File Description Here...
  *
@@ -34,8 +34,8 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 	claimsData := Claims.ClaimsData.(map[string]interface{})
-	jwtUserEmail := claimsData["Email"]
-	log.Println(jwtUserEmail)
+	jwtUserId := claimsData["id"].(string)
+	log.Println(jwtUserId)
 
 	//生成订单号
 	OutTradeNo := uuid.New()
@@ -55,7 +55,7 @@ func CreateOrder(c *gin.Context) {
 	countUint := uint(count)
 
 	if err := utils.DB.Model(&models.Order{}).Create(&models.Order{
-		PaidUser:    jwtUserEmail.(string),
+		PaidUser:    jwtUserId,
 		OutTradeNo:  OutTradeNo.String(),
 		Amount:      subscribe.Money,
 		Count:       &countUint,
@@ -95,9 +95,11 @@ func Notify(c *gin.Context) {
 		return
 	}
 
-	if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).First(&order).Update("paid_status", "paid").Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update order status"})
-		return
+	if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).First(&order).Error; err != nil && order.PaidStatus == "unpaid" {
+		if err := utils.DB.Model(&models.Order{}).Where("out_trade_no = ?", out_trade_no).Update("paid_status", "paid").Error; err != nil {
+			c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update order status"})
+			return
+		}
 	}
 
 	if err := utils.DB.Model(&models.Subscribe{}).Where("id = ?", order.SubscribeId).First(&subscribe).Error; err != nil {
@@ -105,7 +107,7 @@ func Notify(c *gin.Context) {
 		return
 	}
 
-	if err := utils.DB.Model(&models.User{}).Where("email = ?", order.PaidUser).First(&user).Update("balance", *user.Balance+*subscribe.Balance).Error; err != nil {
+	if err := utils.DB.Model(&models.User{}).Where("id = ?", order.PaidUser).First(&user).Update("balance", *user.Balance+*subscribe.Balance).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{Code: 500, Message: "Failed to update user subscribe_id"})
 		return
 	}
