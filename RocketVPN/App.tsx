@@ -2,29 +2,38 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-16 12:54:30
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-17 13:31:18
+ * @LastEditTime: 2025-05-17 13:43:28
  * @FilePath: \RocketVPN\RocketVPN\App.tsx
  * @Description: File Description Here...
- * 
- * Copyright (c) 2025 by JeffreyZhu, All Rights Reserved. 
- */
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
  *
- * @format
- */
+ * Copyright (c) 2025 by JeffreyZhu, All Rights Reserved.
+ *
+*/
 
 import React from 'react';
 
 //import RNSimpleOpenvpn, { addVpnStateListener, removeVpnStateListener } from 'react-native-simple-openvpn';
 import { GlobalProvider } from './DataUtils/GlobalProvider';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import {HomeScreen} from './pages/HomeScreen/HomeScreen';
+import {LoginScreen} from './pages/LoginScreen/LoginScreen';
+
+const Stack = createStackNavigator();
+
 function App(): React.JSX.Element {
 
   return (
     <GlobalProvider>
-      
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Overview' }}/>
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Navigator>
+        {/* <HomeScreen /> */}
+        {/* <LoginScreen /> */}
+      </NavigationContainer>
     </GlobalProvider>
   );
 }
