@@ -28,7 +28,7 @@ function App(): React.JSX.Element {
     <GlobalProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Overview' }}/>
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Rocket VPN' }}/>
           <Stack.Screen name="Login" component={LoginScreen} />
         </Stack.Navigator>
         {/* <HomeScreen /> */}

@@ -3,7 +3,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-17 18:59:49
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-17 19:31:46
+ * @LastEditTime: 2025-05-17 23:29:57
  * @FilePath: \RocketVPN\RocketVPN\components\OvpnCard\OvpnCard.tsx
  * @Description: File Description Here...
  * 
@@ -26,6 +26,7 @@ export function OvpnCard({ data, onPress }: { data: OvpnCardProps; onPress: () =
             width: 20,
             height: 20,
             borderRadius: 10,
+            alignSelf: 'center',
             borderWidth: 2,
             borderColor: '#666',
             marginLeft: 'auto',
@@ -42,11 +43,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         padding: 16,
+        height: 64,
         marginVertical: 8,
         marginHorizontal: 16,
         // marginBottom: 8,
         // marginLeft: 16,
-        marginRight:20,
+        // marginRight:20,
+        // alignSelf:'center',
+        // width: '90%',
 
         shadowColor: '#000',
         shadowOffset: {
@@ -64,5 +68,6 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 14,
         color: '#666',
+        alignSelf: 'center',
     },
 });

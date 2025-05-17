@@ -3,7 +3,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-17 13:34:04
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-17 19:16:44
+ * @LastEditTime: 2025-05-17 23:37:20
  * @FilePath: \RocketVPN\RocketVPN\pages\HomeScreen\HomeScreen.tsx
  * @Description: File Description Here...
  *
@@ -11,10 +11,11 @@
  */
 
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
 import { GlobalContext } from '../../DataUtils/GlobalProvider';
 import { ScrollView } from 'react-native-gesture-handler';
 import { OvpnCard } from '../../components/OvpnCard/OvpnCard';
+import { User } from '../../components/User/User';
 //import { GlobalProvider } from '../../DataUtils/GlobalProvider';
 
 
@@ -24,10 +25,21 @@ export function HomeScreen({ navigation }: { navigation: any }) {
     // const [vpnState, setVpnState] = React.useState('Disconnected');
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Home Screen</Text>
+            <Image
+                source={require('../../assets/img/logo.png')}
+                style={{
+                    width: 200,
+                    height: 200,
+                    marginBottom: 20,
+                    borderRadius: 50,
+                }}
+                resizeMode="contain"
+            />
+            <User membershipDays={123} trafficUsed={123} trafficTotal={123}/>
+            {/* <Text style={styles.title}>Home Screen</Text>
             <Text>{globalState?.isConnected}</Text>
             <Text>{globalState?.selectedOvpn?.name}</Text>
-            <Text>{globalState?.selectedOvpn?.id}</Text>
+            <Text>{globalState?.selectedOvpn?.id}</Text> */}
             <View style={styles.connectButton}
                 //onTouchEnd={() => {navigation.navigate(('Login')); setGlobalState({isConnected:'false'});}}
                 onTouchEnd={() => { setModalVisible(!modalVisible); }}>
@@ -64,7 +76,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
                                 padding: 20,
                                 borderTopLeftRadius: 20,
                                 borderTopRightRadius: 20,
-                                height: '60%',
+                                height: '50%',
                             }}
                         >
                             <View style={{
@@ -114,6 +126,26 @@ export function HomeScreen({ navigation }: { navigation: any }) {
                                         // navigation.navigate('Login');
                                     }}/>
                             </ScrollView>
+                            <View>
+                                <View>
+                                    <TouchableOpacity
+                                        style={{
+                                            backgroundColor: '#4CAF50',
+                                            borderRadius: 100,
+                                            height: 48,
+                                            width: '100%',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            marginTop: 20,
+                                        }}
+                                        onPress={() => {
+                                            setModalVisible(false);
+                                        }}
+                                    >
+                                        <Text style={{ color: 'white', fontSize: 18 }}>确认</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     </TouchableOpacity>
                 </Modal>
@@ -123,8 +155,9 @@ export function HomeScreen({ navigation }: { navigation: any }) {
 }
 const styles = StyleSheet.create({
     container: {
+        display: 'flex',
+        flexDirection: 'column',
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
         width: '100%',
