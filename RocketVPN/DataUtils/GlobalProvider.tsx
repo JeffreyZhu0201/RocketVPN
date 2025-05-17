@@ -13,6 +13,7 @@ import React, { createContext, useState } from 'react';
 
 interface GlobalStateType {
   isConnected: string;
+  selectedOvpn:OvpnCardProps | null;
 }
 
 export const GlobalContext = createContext<{
@@ -21,7 +22,8 @@ export const GlobalContext = createContext<{
 }>({} as any);
 
 export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [globalState, setGlobalState] = useState({
+  const [globalState, setGlobalState] = useState<GlobalStateType>({
+    selectedOvpn: null,
     isConnected: 'true',
     });
 

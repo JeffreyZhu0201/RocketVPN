@@ -3,7 +3,7 @@
  * @Author: Jeffrey Zhu 1624410543@qq.com
  * @Date: 2025-05-17 13:34:04
  * @LastEditors: Jeffrey Zhu 1624410543@qq.com
- * @LastEditTime: 2025-05-17 17:43:13
+ * @LastEditTime: 2025-05-17 19:16:44
  * @FilePath: \RocketVPN\RocketVPN\pages\HomeScreen\HomeScreen.tsx
  * @Description: File Description Here...
  *
@@ -14,6 +14,7 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { GlobalContext } from '../../DataUtils/GlobalProvider';
 import { ScrollView } from 'react-native-gesture-handler';
+import { OvpnCard } from '../../components/OvpnCard/OvpnCard';
 //import { GlobalProvider } from '../../DataUtils/GlobalProvider';
 
 
@@ -25,6 +26,8 @@ export function HomeScreen({ navigation }: { navigation: any }) {
         <View style={styles.container}>
             <Text style={styles.title}>Home Screen</Text>
             <Text>{globalState?.isConnected}</Text>
+            <Text>{globalState?.selectedOvpn?.name}</Text>
+            <Text>{globalState?.selectedOvpn?.id}</Text>
             <View style={styles.connectButton}
                 //onTouchEnd={() => {navigation.navigate(('Login')); setGlobalState({isConnected:'false'});}}
                 onTouchEnd={() => { setModalVisible(!modalVisible); }}>
@@ -77,122 +80,39 @@ export function HomeScreen({ navigation }: { navigation: any }) {
                                 style={{ marginTop: 20 }}
                                 showsVerticalScrollIndicator={false}
                             >
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text>Option 2</Text>
-                                </TouchableOpacity>
-                                
-
+                                {/* {
+                                    ovpnList.map((item, index) => (
+                                        <OvpnCard 
+                                            key={index}
+                                            data={item}
+                                            onPress={() => {
+                                                setGlobalState({ ...globalState, selectedOvpn: item });
+                                                setModalVisible(false);
+                                                // navigation.navigate('Login');
+                                            }}
+                                    ))
+                                } */}
+                                <OvpnCard
+                                    data={{ id:'1',name: 'VPN 1' }}
+                                    onPress={() => {
+                                        setGlobalState({ ...globalState, selectedOvpn: { id:'1',name: 'VPN 1' }});
+                                        // setModalVisible(false);
+                                        // navigation.navigate('Login');
+                                    }}/>
+                                <OvpnCard
+                                    data={{ id:'2',name: 'VPN 2' }}
+                                    onPress={() => {
+                                        setGlobalState({ ...globalState, selectedOvpn: { id:'2',name: 'VPN 2' } });
+                                        // setModalVisible(false);
+                                        // navigation.navigate('Login');
+                                    }}/>
+                                <OvpnCard
+                                    data={{ id:'3',name: 'VPN 3' }}
+                                    onPress={() => {
+                                        setGlobalState({ ...globalState, selectedOvpn: { id:'3',name: 'VPN 3' } });
+                                        // setModalVisible(false);
+                                        // navigation.navigate('Login');
+                                    }}/>
                             </ScrollView>
                         </View>
                     </TouchableOpacity>
